@@ -1,0 +1,8 @@
+[hnswlib]
+provider = "hnswlib"
+dim = 768                    # Dimension of the elements
+max_elements = 100           # Maximum number of elements, should be known beforehand
+M = 16                       # Tightly connected with internal dimensionality of the data
+                             # strongly affects the memory consumption
+ef_construction = 200        # Controls index search speed/build speed tradeoff
+metric = "L2"                # Distance metric to use, can be L2 or IP

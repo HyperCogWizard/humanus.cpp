@@ -1,0 +1,17 @@
+["nomic-embed-text-v1.5"]
+provider = "oai"                          # Only support OAI-Compatible style for now
+base_url = "http://localhost:8080"        # Base url. Note: Don't add any endpoint behind
+endpoint = "/v1/embeddings"               # Endpoint of embeddings
+model = "nomic-embed-text-v1.5.f16.gguf"  # Model name
+api_key = ""                              # Your API Key
+embeddings_dim = 768                      # Dimension of embeddings (refer to API docs)
+max_retries = 3                           # Maximum retry count
+
+[qwen-text-embedding-v3]
+provider = "oai"
+base_url = "https://dashscope.aliyuncs.com"
+endpoint = "/compatible-mode/v1/embeddings"
+model = "text-embedding-v3"
+api_key = "sk-"
+embeddings_dim = 1024
+max_retries = 3

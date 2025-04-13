@@ -1,0 +1,45 @@
+[qwen-max]
+model = "qwen-max"                                   # Model name
+base_url = "https://dashscope.aliyuncs.com"          # Base url. Note: Don't add any endpoint behind
+endpoint = "/compatible-mode/v1/chat/completions"    # Endpoint of chat completions
+api_key = "sk-"                                      # Your API Key
+
+[qwen-max-latest]
+model = "qwen-max-latest"                            # Model name
+base_url = "https://dashscope.aliyuncs.com"          # Base url. Note: Don't add any endpoint behind
+endpoint = "/compatible-mode/v1/chat/completions"    # Endpoint of chat completions
+api_key = "sk-"                                      # Your API Key
+
+[qwen-vl-max-latest]
+model = "qwen-vl-max-latest"
+base_url = "https://dashscope.aliyuncs.com"
+endpoint = "/compatible-mode/v1/chat/completions"
+api_key = "sk-"
+enable_vision = true                                 # This means the model could accept content item like {"image_url", {"url", "xxx"}}
+
+["claude-3.5-sonnet"]
+model = "anthropic/claude-3.5-sonnet"
+base_url = "https://openrouter.ai"
+endpoint = "/api/v1/chat/completions"
+api_key = "sk-"
+enable_vision = true
+
+["claude-3.7-sonnet"]
+model = "anthropic/claude-3.7-sonnet"
+base_url = "https://openrouter.ai"
+endpoint = "/api/v1/chat/completions"
+api_key = "sk-"
+enable_vision = true
+
+[deepseek-chat]
+model = "deepseek-chat"
+base_url = "https://api.deepseek.com"
+endpoint = "/v1/chat/completions"
+api_key = "sk-"
+
+[deepseek-r1]
+model = "deepseek-reasoner"
+base_url = "https://api.deepseek.com"
+endpoint = "/v1/chat/completions"
+api_key = "sk-"
+enable_tool = false                                # The API provider does not support tool use. Use builtin tool hint template.

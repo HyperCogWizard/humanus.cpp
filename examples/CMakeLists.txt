@@ -1,0 +1,10 @@
+file(GLOB EXAMPLE_DIRS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/*)
+
+foreach(EXAMPLE_DIR ${EXAMPLE_DIRS})
+    if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${EXAMPLE_DIR})
+        if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${EXAMPLE_DIR}/CMakeLists.txt")
+            add_subdirectory(${EXAMPLE_DIR})
+            message(STATUS "Added example: ${EXAMPLE_DIR}")
+        endif()
+    endif()
+endforeach() 

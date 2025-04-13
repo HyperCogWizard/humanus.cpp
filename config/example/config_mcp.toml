@@ -1,0 +1,23 @@
+[python_execute]
+type = "sse"
+host = "localhost"
+port = 8895
+sse_endpoint = "/sse"
+message_enpoint = "/message"
+
+[puppeteer]
+type = "stdio"
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-puppeteer"]
+
+[playwright]
+type = "stdio"
+command = "npx"
+args = ["-y", "@executeautomation/playwright-mcp-server"]
+
+[filesystem]
+type = "stdio"
+command = "npx"
+args = ["-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/Users/{Username}/Desktop"] # Allowed paths

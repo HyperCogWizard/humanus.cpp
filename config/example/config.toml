@@ -1,0 +1,15 @@
+[humanus_cli]
+llm = "qwen-max-latest"                               # Key in config_llm.toml
+memory = "default"                                    # Key in config_mem.toml
+tools = ["filesystem", "playwright", "image_loader"]  # Builtin tools configuration
+mcp_servers = ["python_execute"]                      # Key in config_mcp.toml, all MCP tools provided by servers will be added
+max_steps = 30                                        # Maximum automatic steps without user's check
+duplicate_threshold = 2                               # Used to detect repeating condition (will be checked by LCS)
+
+[humanus_plan]
+llm = "deepseek-chat"
+memory = "long-context"
+tools = ["filesystem", "playwright", "image_loader"]
+mcp_servers = ["python_execute"]
+max_steps = 30
+duplicate_threshold = 2

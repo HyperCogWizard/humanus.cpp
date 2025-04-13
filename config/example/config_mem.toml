@@ -1,0 +1,19 @@
+[default]
+max_messages = 16                           # Maximum number of messages in short-term memory
+max_tokens_message = 32768                  # Maximum number of tokens in single message
+max_tokens_messages = 65536                 # Maximum number of tokens in short-term memory
+max_tokens_context = 131072                 # Maximum number of tokens in context (used by `get_messages`)
+retrieval_limit = 32                        # Maximum number of results to retrive from long-term memory
+embedding_model = "qwen-text-embedding-v3"  # Key in config_embd.toml
+vector_store = "hnswlib"                    # Key in config_vec.toml
+llm = "qwen-max-latest"                     # Key in config_llm.toml
+
+[long-context]
+max_messages = 32
+max_tokens_message = 64000
+max_tokens_messages = 128000
+max_tokens_context = 128000
+retrieval_limit = 32
+embedding_model = "qwen-text-embedding-v3"
+vector_store = "hnswlib"
+llm = "qwen-max-latest"

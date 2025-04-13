@@ -1,0 +1,3 @@
+[submodule "mcp"]
+	path = mcp
+	url = https://github.com/hkr04/cpp-mcp.git
