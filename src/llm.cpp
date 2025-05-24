@@ -125,7 +125,8 @@ std::string LLM::ask(
 
     json body = {
         {"model", llm_config_->model},
-        {"messages", formatted_messages}
+        {"messages", formatted_messages},
+        {"enable_thinking", llm_config_->enable_thinking} // Qwen3 thinking setting (must be set to false for non-streaming calls)
     };
 
     if (llm_config_->temperature > 0) {
@@ -245,7 +246,8 @@ json LLM::ask_tool(
     
     json body = {
         {"model", llm_config_->model},
-        {"messages", formatted_messages}
+        {"messages", formatted_messages},
+        {"enable_thinking", llm_config_->enable_thinking} // Qwen3 thinking setting (must be set to false for non-streaming calls)
     };
 
     if (llm_config_->temperature > 0) {

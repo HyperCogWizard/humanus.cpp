@@ -11,6 +11,7 @@
 #include "llm.h"
 #include "utils.h"
 #include "tool/fact_extract.h"
+#include "tool/memory.h"
 #include <deque>
 #include <vector>
 
@@ -77,6 +78,7 @@ struct Memory : BaseMemory {
     std::shared_ptr<LLM> llm_vision;
 
     std::shared_ptr<FactExtract> fact_extract_tool;
+    std::shared_ptr<MemoryTool> memory_tool;
 
     bool retrieval_enabled;
 
@@ -134,6 +136,7 @@ struct Memory : BaseMemory {
         }
 
         fact_extract_tool = std::make_shared<FactExtract>();
+        memory_tool = std::make_shared<MemoryTool>();
     }
 
     bool add_message(const Message& message) override {
@@ -329,56 +332,88 @@ struct Memory : BaseMemory {
 
         std::string function_calling_prompt = get_update_memory_messages(old_memories, new_facts, update_memory_prompt);
 
-        std::string new_memories_with_actions_str;
-        json new_memories_with_actions = json::array();
+        // std::string new_memories_with_actions_str;
+        // json new_memories_with_actions = json::array();
 
-        try {
-            new_memories_with_actions_str = llm->ask(
-                {Message::user_message(function_calling_prompt)}
-            );
-            new_memories_with_actions_str = remove_code_blocks(new_memories_with_actions_str);
-        } catch (const std::exception& e) {
-            logger->error("Error in parsing new_memories_with_actions: " + std::string(e.what()));
-        }
+        // try {
+        //     new_memories_with_actions_str = llm->ask(
+        //         {Message::user_message(function_calling_prompt)}
+        //     );
+        //     new_memories_with_actions_str = remove_code_blocks(new_memories_with_actions_str);
+        // } catch (const std::exception& e) {
+        //     logger->error("Error in parsing new_memories_with_actions: " + std::string(e.what()));
+        // }
         
+        // try {
+        //     new_memories_with_actions = json::parse(new_memories_with_actions_str);
+        // } catch (const std::exception& e) {
+        //     logger->error("Invalid JSON response: " + std::string(e.what()));
+        // }
+
+        response = llm->ask_tool(
+            {Message::user_message(function_calling_prompt)},
+            "", // system prompt
+            "", // next step prompt
+            json::array({memory_tool->to_param()}),
+            "required"
+        );
+
+        std::vector<json> memory_events;
+
         try {
-            new_memories_with_actions = json::parse(new_memories_with_actions_str);
+            auto tool_calls = ToolCall::from_json_list(response["tool_calls"]);
+            for (const auto& tool_call : tool_calls) {
+                if (tool_call.function.name != "memory") { // might be other tools because of hallucinations (e.g. wrongly responsed to user message)
+                    continue;
+                }
+                // Parse arguments
+                json args = tool_call.function.arguments;
+
+                if (args.is_string()) {
+                    args = json::parse(args.get<std::string>());
+                }
+
+                auto events = memory_tool->execute(args).output.get<std::vector<json>>();
+                if (!events.empty()) {
+                    memory_events.insert(memory_events.end(), events.begin(), events.end());
+                }
+            }
         } catch (const std::exception& e) {
-            logger->error("Invalid JSON response: " + std::string(e.what()));
+            logger->warn("Error in memory_events: " + std::string(e.what()));
         }
 
         try {
-            for (const auto& resp : new_memories_with_actions["memory"]) {
-                logger->debug("Processing memory: " + resp.dump(2));
+            for (const auto& event : memory_events) {
+                logger->debug("Processing memory: " + event.dump(2));
                 try {
-                    if (!resp.contains("text")) {
+                    if (!event.contains("text")) {
                         logger->warn("Skipping memory entry because of empty `text` field.");
                         continue;
                     }
-                    std::string event = resp.value("event", "NONE");
+                    std::string type = event.value("type", "NONE");
                     size_t memory_id;
                     try {
-                        if (event != "ADD") {
-                            memory_id = temp_id_mapping.at(resp["id"].get<size_t>());
+                        if (type != "ADD") {
+                            memory_id = temp_id_mapping.at(event["id"].get<size_t>());
                         } else {
                             memory_id = get_uuid_64();
                         }
                     } catch (...) {
                         memory_id = get_uuid_64();
                     }
-                    if (event == "ADD") {
+                    if (type == "ADD") {
                         _create_memory(
                             memory_id,
-                            resp["text"], // data
+                            event["text"], // data
                             new_message_embeddings // existing_embeddings
                         );
-                    } else if (event == "UPDATE") {
+                    } else if (type == "UPDATE") {
                         _update_memory(
                             memory_id,
-                            resp["text"], // data
+                            event["text"], // data
                             new_message_embeddings // existing_embeddings
                         );
-                    } else if (event == "DELETE") {
+                    } else if (type == "DELETE") {
                         _delete_memory(memory_id);
                     }
                 } catch (const std::exception& e) {

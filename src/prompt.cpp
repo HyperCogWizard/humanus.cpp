@@ -91,25 +91,31 @@ There are specific guidelines to select which operation to perform:
     - Old Memory:
         [
             {
-                "id" : 0,
-                "text" : "User is a software engineer"
+                "id": 0,
+                "text": "User is a software engineer"
             }
         ]
     - Retrieved facts: ["Name is John"]
     - New Memory:
-        {
-            "memory" : [
-                {
-                    "id" : 0,
-                    "text" : "User is a software engineer",
-                    "event" : "NONE"
-                },
-                {
-                    "id" : 1,
-                    "text" : "Name is John",
-                    "event" : "ADD"
+         {
+            "type": "function",
+            "function": {
+                "name": "memory",
+                "arguments": {
+                    "events": [
+                        {
+                            "id": 0,
+                            "text": "User is a software engineer",
+                            "type": "NONE"
+                        },
+                        {
+                            "id": 1,
+                            "text": "Name is John",
+                            "type": "ADD"
+                        }
+                    ]
                 }
-            ]
+            }
         }
 
 2. **Update**: If the retrieved facts contain information that is already present in the memory but the information is totally different, then you have to update it. 
@@ -123,40 +129,46 @@ Please note to return the IDs in the output from the input IDs only and do not g
     - Old Memory:
         [
             {
-                "id" : 0,
-                "text" : "I really like cheese pizza"
+                "id": 0,
+                "text": "I really like cheese pizza"
             },
             {
-                "id" : 1,
-                "text" : "User is a software engineer"
+                "id": 1,
+                "text": "User is a software engineer"
             },
             {
-                "id" : 2,
-                "text" : "User likes to play cricket"
+                "id": 2,
+                "text": "User likes to play cricket"
             }
         ]
     - Retrieved facts: ["Loves chicken pizza", "Loves to play cricket with friends"]
     - New Memory:
         {
-            "memory" : [
-                {
-                    "id" : 0,
-                    "text" : "User loves cheese and chicken pizza",
-                    "event" : "UPDATE",
-                    "old_memory" : "I really like cheese pizza"
-                },
-                {
-                    "id" : 1,
-                    "text" : "User is a software engineer",
-                    "event" : "NONE"
-                },
-                {
-                    "id" : 2,
-                    "text" : "User loves to play cricket with friends",
-                    "event" : "UPDATE",
-                    "old_memory" : "User likes to play cricket"
+            "type": "function",
+            "function": {
+                "name": "memory",
+                "arguments": {
+                    "events": [
+                        {
+                            "id": 0,
+                            "text": "User loves cheese and chicken pizza",
+                            "type": "UPDATE",
+                            "old_memory": "I really like cheese pizza"
+                        },
+                        {
+                            "id": 1,
+                            "text": "User is a software engineer",
+                            "type": "NONE"
+                        },
+                        {
+                            "id": 2,
+                            "text": "User loves to play cricket with friends",
+                            "type": "UPDATE",
+                            "old_memory": "User likes to play cricket"
+                        }
+                    ]
                 }
-            ]
+            }
         }
 
 3. **Delete**: If the retrieved facts contain information that contradicts the information present in the memory, then you have to delete it. Or if the direction is to delete the memory, then you have to delete it.
@@ -165,29 +177,35 @@ Please note to return the IDs in the output from the input IDs only and do not g
     - Old Memory:
         [
             {
-                "id" : 0,
-                "text" : "User's name is John"
+                "id": 0,
+                "text": "User's name is John"
             },
             {
-                "id" : 1,
-                "text" : "User loves cheese pizza"
+                "id": 1,
+                "text": "User loves cheese pizza"
             }
         ]
     - Retrieved facts: ["Dislikes cheese pizza"]
     - New Memory:
         {
-            "memory" : [
-                {
-                    "id" : 0,
-                    "text" : "User's name is John",
-                    "event" : "NONE"
-                },
-                {
-                    "id" : 1,
-                    "text" : "User loves cheese pizza",
-                    "event" : "DELETE"
+            "type": "function",
+            "function": {
+                "name": "memory",
+                "arguments": {
+                    "events": [
+                        {
+                            "id" : 0,
+                            "text" : "User's name is John",
+                            "type" : "NONE"
+                        },
+                        {
+                            "id" : 1,
+                            "text" : "User loves cheese pizza",
+                            "type" : "DELETE"
+                        }
+                    ]
                 }
-            ]
+            }
         }
 
 4. **No Change**: If the retrieved facts contain information that is already present in the memory, then you do not need to make any changes.
@@ -195,30 +213,38 @@ Please note to return the IDs in the output from the input IDs only and do not g
     - Old Memory:
         [
             {
-                "id" : 0,
-                "text" : "User's name is John"
+                "id": 0,
+                "text": "User's name is John"
             },
             {
-                "id" : 1,
-                "text" : "User loves cheese pizza"
+                "id": 1,
+                "text": "User loves cheese pizza"
             }
         ]
     - Retrieved facts: ["User's name is John"]
     - New Memory:
         {
-            "memory" : [
-                {
-                    "id" : 0,
-                    "text" : "User's name is John",
-                    "event" : "NONE"
-                },
-                {
-                    "id" : 1,
-                    "text" : "User loves cheese pizza",
-                    "event" : "NONE"
+            "type": "function",
+            "function": {
+                "name": "memory",
+                "arguments": {
+                    "events": [
+                        {
+                            "id": 0,
+                            "text": "User's name is John",
+                            "type": "NONE"
+                        },
+                        {
+                            "id": 1,
+                            "text": "User loves cheese pizza",
+                            "type": "NONE"
+                        }
+                    ]
                 }
-            ]
+            }
         }
+
+Please call the `memory` tool to return the memory events.
 )";
 
 } // namespace prompt

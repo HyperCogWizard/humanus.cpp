@@ -120,6 +120,7 @@ struct LLMConfig {
     double temperature;
     bool enable_vision;
     bool enable_tool;
+    bool enable_thinking; // Qwen3 thinking settings (must be set to false for non-streaming calls)
 
     ToolParser tool_parser;
 
@@ -134,9 +135,10 @@ struct LLMConfig {
         double temperature = -1, // -1 for default
         bool enable_vision = false,
         bool enable_tool = true,
+        bool enable_thinking = false,
         const ToolParser& tool_parser = ToolParser()
     ) : model(model), api_key(api_key), base_url(base_url), endpoint(endpoint), vision_details(vision_details),
-        max_tokens(max_tokens), timeout(timeout), temperature(temperature), enable_vision(enable_vision), enable_tool(enable_tool), tool_parser(tool_parser) {}
+        max_tokens(max_tokens), timeout(timeout), temperature(temperature), enable_vision(enable_vision), enable_tool(enable_tool), enable_thinking(enable_thinking), tool_parser(tool_parser) {}
         
     static LLMConfig load_from_toml(const toml::table& config_table);
 };

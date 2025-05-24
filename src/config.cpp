@@ -46,6 +46,10 @@ LLMConfig LLMConfig::load_from_toml(const toml::table& config_table) {
             config.enable_tool = config_table["enable_tool"].as_boolean()->get();
         }
 
+        if (config_table.contains("enable_thinking")) {
+            config.enable_thinking = config_table["enable_thinking"].as_boolean()->get();
+        }
+
         if (!config.enable_tool) {
             // Load tool parser configuration
             ToolParser tool_parser;
